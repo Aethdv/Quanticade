@@ -1262,7 +1262,7 @@ static inline int16_t negamax(thread_t *thread, searchstack_t *ss,
       R -= stm_in_check(next_pos) * LMR_IN_CHECK; // check on the new position
       R += (ss->cutoff_cnt > 3) * LMR_CUTOFF_CNT;
       R -= improving * LMR_IMPROVING * 3 / 4;
-      R -= improving * LMR_IMPROVING / 4 * !pv_node;
+      R -= improving * LMR_IMPROVING / 4 * cutnode;
       R += (bound == HASH_FLAG_EXACT) * LMR_HASH_FLAG_EXACT;
       R -= LMR_CORRECTION * abs(correction) / 1024;
 
