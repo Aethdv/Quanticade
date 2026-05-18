@@ -560,7 +560,7 @@ static inline int16_t quiescence(thread_t *thread, searchstack_t *ss,
                          HASH_FLAG_NONE, tt_was_pv);
       }
       if (!is_decisive(best_score) && !is_decisive(beta)) {
-        best_score = (best_score + beta) / 2;
+        best_score = (3 * best_score + 5 * beta) / 8;
       }
       // node (position) fails high
       return best_score;
