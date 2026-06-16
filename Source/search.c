@@ -43,7 +43,7 @@ extern uint8_t minimal;
 
 // Depths and untunable values (SPSA poison)
 TUNABLE(int RAZOR_DEPTH = 7);
-TUNABLE(int RFP_DEPTH = 9);
+TUNABLE(int RFP_DEPTH = 14);
 TUNABLE(int FP_DEPTH = 10);
 TUNABLE(int IIR_DEPTH = 4);
 TUNABLE(int SEE_DEPTH = 10);
@@ -68,6 +68,7 @@ TUNABLE(int SEARCH_MVV_MULT = 1024);
 // SPSA Tuned params
 TUNABLE(int RAZOR_MARGIN = 312);
 TUNABLE(int RFP_MARGIN = 60);
+TUNABLE(int RFP_QUAD_MARGIN = 3);
 TUNABLE(int RFP_BASE_MARGIN = 26);
 TUNABLE(int RFP_IMPROVING = 62);
 TUNABLE(int RFP_OPP_WORSENING = 15);
@@ -885,9 +886,11 @@ static inline int16_t negamax(thread_t *thread, searchstack_t *ss,
   // Reverse Futility Pruning
   if (!ss->tt_pv && !ss->excluded_move && depth <= RFP_DEPTH &&
       !is_loss(beta) && !is_win(ss->eval) &&
-      ss->eval >= beta + RFP_BASE_MARGIN + RFP_MARGIN * depth -
-                      RFP_IMPROVING * improving -
-                      RFP_OPP_WORSENING * opponent_worsening) {
+        ss->eval >= beta + RFP_BASE_MARGIN +
+                        RFP_QUAD_MARGIN * depth * depth +
+                        RFP_MARGIN * depth -
+                        RFP_IMPROVING * improving -
+                        RFP_OPP_WORSENING * opponent_worsening) {
     // evaluation margin substracted from static evaluation score
     return beta + (ss->eval - beta) / 3;
   }
